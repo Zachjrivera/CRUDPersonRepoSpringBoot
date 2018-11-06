@@ -1,54 +1,64 @@
 package io.zipcoder.crudapp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
+
 @Entity
-public class Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String name;
-    private String lastName;
-    private Long id;
+    public class Person {
 
-    public Person(String name, String lastName, Long id) {
-        this.name = name;
-        this.lastName = lastName;
-        this.id = id;
-    }
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Integer id;
 
-    public String getName() {
-        return name;
-    }
+        private String firstName;
+        private String lastName;
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getLastName() {
-        return lastName;
-    }
+        public Person(String firstName, String lastName, Integer id) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.id = id;
+        }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+        public Person(){}
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        public String getFirstName() {
+            return firstName;
+        }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", id=" + id +
-                '}';
-    }
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "Person{" +
+                    "firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", id=" + id +
+                    '}';
+        }
 }

@@ -4,51 +4,71 @@ import io.zipcoder.crudapp.Person;
 
 import io.zipcoder.crudapp.interfaces.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.xml.ws.Response;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
+
 
 @RestController
 public class PersonController  {
 
    @Autowired
-    PersonRepository personList;
+    PersonRepository personRepository;
 
+//Create Person
+    @RequestMapping(value = "/people",method = RequestMethod.POST)
+    public ResponseEntity createperson(@RequestBody Person person){
+    personRepository.save(person);
 
-    @RequestMapping(value = "/person",method = RequestMethod.POST)
-    public Person createperson(@RequestBody Person person){
-    personList.save(person);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newPollUri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(person.getId())
+                .toUri();
 
-    return null;
+        responseHeaders.setLocation(newPollUri);
+
+        return new ResponseEntity<>("Creating Person", HttpStatus.CREATED);
     }
-
-    @RequestMapping(value = "/person/{id}",method = RequestMethod.GET)
-    public Person getPersonbyID(@PathVariable Long id){
-        personList.findOne(id);
-        return null;
+//Get person by id
+    @RequestMapping(value = "/people/{id}",method = RequestMethod.GET)
+    public ResponseEntity getPersonbyID(@PathVariable Integer id){
+        Person p = personRepository.findOne(id);
+        return new ResponseEntity<>("Getting Person by ID", HttpStatus.OK) ;
 
     }
-
+////Get all of the people
     @RequestMapping(value ="/people",method = RequestMethod.GET)
-    public void getPersonList(){
-        personList.findAll();
+    public ResponseEntity<?> getallpeople(){
+
+        Iterable<Person> allPolls = personRepository.findAll();
+        return new ResponseEntity<>(allPolls, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/people/{id}",method = RequestMethod.PUT)
-    public Person updatePerson(@PathVariable Long id, @RequestBody Person person){
-       personList.findOne(id);
-       personList.delete(id);
-       personList.save(person);
-       return null;
+//update person
+    @RequestMapping(value = "/people/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> updatePerson(@RequestBody Person person, @PathVariable Integer id) {
+
+           Person p = personRepository.findOne(id);
+           if (p.getId() == id){
+               personRepository.save(person);
+               return new ResponseEntity<>("Updating",HttpStatus.OK);
+           }else personRepository.save(person);
+           return new ResponseEntity<>("Createing", HttpStatus.CREATED);
+
+
     }
 
+
+//delete person
     @RequestMapping(value = "/people/{id}",method = RequestMethod.DELETE)
-    public void deleteperson(@PathVariable Long id) {
-        personList.delete(id);
+    public void deleteperson(@PathVariable Integer id) {
+        personRepository.delete(id);
     }
 
 }
